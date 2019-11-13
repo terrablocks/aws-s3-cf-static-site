@@ -122,3 +122,6 @@ resource "aws_route53_record" "website-record" {
   }
 }
 
+output "website_endpoint" {
+  value = "${aws_route53_record.website-record.fqdn}"
+}
