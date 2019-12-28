@@ -15,6 +15,6 @@ This terraform module will deploy the following services for hosting a static we
 - **hosted_zone**: Root hosted zone to be used for mapping CloudFront with custom domain name
 
 ## Deployment
-- `terraform init` - initializes plugins required to deploy resources
-- `terraform plan` - get detailed view of resources being created/deleted/replaced
-- `terraform apply -auto-approve` - deploy the template
+- `terraform init` - download plugins required to deploy resources
+- `terraform plan` - get detailed view of resources that will be created, deleted or replaced
+- `terraform apply -auto-approve` - deploy the template without confirmation (non-interactive mode)
