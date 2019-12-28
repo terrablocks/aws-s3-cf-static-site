@@ -96,17 +96,18 @@ data "aws_route53_zone" "zone" {
 }
 
 resource "aws_route53_record" "cert_record" {
-  name    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_name}"
-  type    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_type}"
+  count = "${length(var.cnames)}"
+  name    = "${aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_name}"
+  type    = "${aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_type}"
   zone_id = "${data.aws_route53_zone.zone.id}"
-  records = ["${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}"]
+  records = ["${aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_value}"]
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "cert_validation" {
   provider = "aws.us"
   certificate_arn         = "${aws_acm_certificate.cert.arn}"
-  validation_record_fqdns = ["${aws_route53_record.cert_record.fqdn}"]
+  validation_record_fqdns = "${aws_route53_record.cert_record.*.fqdn}"
 }
 
 resource "aws_route53_record" "website-record" {
@@ -123,5 +124,5 @@ resource "aws_route53_record" "website-record" {
 }
 
 output "website_endpoint" {
-  value = "${aws_route53_record.website-record.fqdn}"
+  value = "${aws_route53_record.website-record.0.fqdn}"
 }
