@@ -122,7 +122,3 @@ resource "aws_route53_record" "website-record" {
     evaluate_target_health = false
   }
 }
-
-output "website_endpoint" {
-  value = "${aws_route53_record.website-record.0.fqdn}"
-}
