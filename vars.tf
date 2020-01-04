@@ -1,6 +1,11 @@
-variable "profile" {}
-variable "region" {
-  default = "us-east-1"
+variable "profile" {
+  default = null
+}
+variable "access_key" {
+  default = null
+}
+variable "secret_key" {
+  default = null
 }
 variable "bucket_name" {}
 variable "cnames" {

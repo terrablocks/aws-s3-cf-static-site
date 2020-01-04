@@ -1,14 +1,3 @@
-provider "aws" {
-  profile = "${var.profile}"
-  region = "${var.region}"
-}
-
-provider "aws" {
-  alias = "us"
-  profile = "${var.profile}"
-  region = "us-east-1"
-}
-
 resource "aws_s3_bucket" "website_bucket" {
   bucket = "${var.bucket_name}"
   acl = "private"
@@ -82,6 +71,14 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
   ]
 }
 POLICY
+}
+
+provider "aws" {
+  alias = "us"
+  profile = "${var.profile}"
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
+  region = "us-east-1"
 }
 
 resource "aws_acm_certificate" "cert" {
