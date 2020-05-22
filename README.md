@@ -10,10 +10,9 @@ This terraform module will deploy the following services for hosting a static we
 ## Variables
 | Parameter   | Type   | Description                                                                | Default   | Required |
 |-------------|--------|----------------------------------------------------------------------------|-----------|----------|
-| profile     | string | Either profile or access key and secret key is required for AuthN and AuthZ                                 | null          | N        |
-| access_key     | string | Either profile or access key and secret key is required for AuthN and AuthZ                                 | null          | N        |
-| secret_key     | string | Either profile or access key and secret key is required for AuthN and AuthZ                                 | null          | N        |
-| region      | string | AWS region identifier where resources needs to be created                  | us-east-1 | N        |
+| profile     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
+| access_key     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
+| secret_key     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
 | bucket_name | string | Name of the S3 bucket                                                      |           | Y        |
 | origin_path | string | Serve request from a directory within your S3 bucket                  |           | Y        |
 | cnames      | list   | List of alternate domain names for serving static website                  |           | Y        |
