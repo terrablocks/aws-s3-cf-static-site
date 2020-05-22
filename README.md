@@ -16,7 +16,7 @@ This terraform module will deploy the following services for hosting a static we
 | bucket_name | string | Name of the S3 bucket                                                      |           | Y        |
 | origin_path | string | Serve request from a directory within your S3 bucket                  |           | N        |
 | cnames      | list   | List of alternate domain names for serving static website                  |          | Y        |
-| hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name. |           | Y        |
+| hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name |           | Y        |
 
 ## Outputs
 | Parameter           | Type   | Description               |
