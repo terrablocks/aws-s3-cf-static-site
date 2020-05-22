@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
   enabled             = true
   default_root_object = "index.html"
-  aliases             = var.cnames
+  aliases             = length(var.cnames) == 0 ? null : var.cnames
 
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -96,8 +96,8 @@ data "aws_route53_zone" "zone" {
 }
 
 resource "aws_route53_record" "cert_record" {
-  allow_overwrite = true
   count           = length(var.cnames)
+  allow_overwrite = true
   name            = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_name
   type            = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_type
   zone_id         = data.aws_route53_zone.zone.id
@@ -112,8 +112,8 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 }
 
 resource "aws_route53_record" "website-record" {
-  allow_overwrite = true
   count           = length(var.cnames)
+  allow_overwrite = true
   zone_id         = data.aws_route53_zone.zone.id
   name            = var.cnames[count.index]
   type            = "A"

@@ -14,9 +14,9 @@ This terraform module will deploy the following services for hosting a static we
 | access_key     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
 | secret_key     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
 | bucket_name | string | Name of the S3 bucket                                                      |           | Y        |
-| origin_path | string | Serve request from a directory within your S3 bucket                  |           | Y        |
-| cnames      | list   | List of alternate domain names for serving static website                  |           | Y        |
-| hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name |           | Y        |
+| origin_path | string | Serve request from a directory within your S3 bucket                  |           | N        |
+| cnames      | list   | List of alternate domain names for serving static website                  |          | Y        |
+| hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name. |           | Y        |
 
 ## Outputs
 | Parameter           | Type   | Description               |
