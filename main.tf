@@ -1,6 +1,8 @@
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
   acl    = "private"
+
+  force_destroy = true
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
@@ -94,12 +96,13 @@ data "aws_route53_zone" "zone" {
 }
 
 resource "aws_route53_record" "cert_record" {
-  count   = length(var.cnames)
-  name    = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_name
-  type    = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_type
-  zone_id = data.aws_route53_zone.zone.id
-  records = [aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_value]
-  ttl     = 60
+  allow_overwrite = true
+  count           = length(var.cnames)
+  name            = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_name
+  type            = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_type
+  zone_id         = data.aws_route53_zone.zone.id
+  records         = [aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_value]
+  ttl             = 60
 }
 
 resource "aws_acm_certificate_validation" "cert_validation" {
@@ -109,10 +112,11 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 }
 
 resource "aws_route53_record" "website-record" {
-  count   = length(var.cnames)
-  zone_id = data.aws_route53_zone.zone.id
-  name    = var.cnames[count.index]
-  type    = "A"
+  allow_overwrite = true
+  count           = length(var.cnames)
+  zone_id         = data.aws_route53_zone.zone.id
+  name            = var.cnames[count.index]
+  type            = "A"
 
   alias {
     name                   = aws_cloudfront_distribution.website_cdn.domain_name
