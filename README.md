@@ -22,7 +22,7 @@ This terraform module will deploy the following services for hosting a static we
 | Parameter           | Type   | Description               |
 |---------------------|--------|---------------------------|
 | s3_bucket           | string | S3 Bucket Name            |
-| cloudfront_arn      | string | ARN of CloudFront distribution       |
+| cloudfront_id       | string | ID of CloudFront distribution       |
 | cloudfront_endpoint | string | Public endpoint of CloudFront distribution       |
 | website_endpoints   | list   | List of website endpoints created. Same as `cnames` variable value  |
 
