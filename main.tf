@@ -1,8 +1,9 @@
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = var.bucket_name
-  acl    = "private"
-
+  bucket        = var.bucket_name
+  acl           = "private"
   force_destroy = true
+
+  tags = var.tags
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
@@ -54,6 +55,8 @@ resource "aws_cloudfront_distribution" "website_cdn" {
       restriction_type = "none"
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_policy" "website_bucket_policy" {

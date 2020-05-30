@@ -21,3 +21,8 @@ variable "cnames" {
 }
 
 variable "hosted_zone" {}
+
+variable "tags" {
+  type    = map
+  default = {}
+}
