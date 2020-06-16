@@ -6,6 +6,11 @@ This terraform module will deploy the following services for hosting a static we
 - ACM
 - Route53
 
+## Licence:
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+MIT Licence. See [Licence](LICENCE) for full details.
+
 # Usage Instructions:
 ## Variables
 | Parameter   | Type   | Description                                                                | Default   | Required |
