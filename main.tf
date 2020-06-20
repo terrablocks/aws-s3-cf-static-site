@@ -26,8 +26,11 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   }
 
   enabled             = true
+  is_ipv6_enabled     = true
   default_root_object = "index.html"
   aliases             = length(var.cnames) == 0 ? null : var.cnames
+  comment             = var.comment
+  web_acl_id          = var.web_acl_id
 
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -43,7 +46,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
     }
   }
 
-  price_class = "PriceClass_All"
+  price_class = var.price_class
   viewer_certificate {
     acm_certificate_arn            = length(var.cnames) == 0 ? null : aws_acm_certificate_validation.cert_validation.certificate_arn
     cloudfront_default_certificate = length(var.cnames) == 0 ? true : false
@@ -70,7 +73,7 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
       "Effect": "Allow",
       "Action": "s3:GetObject",
       "Principal": {
-        "CanonicalUser": "${aws_cloudfront_origin_access_identity.origin_access_identity.s3_canonical_user_id}"
+        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
       },
       "Resource": "${aws_s3_bucket.website_bucket.arn}/*"
     }

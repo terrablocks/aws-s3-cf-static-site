@@ -21,6 +21,9 @@ MIT Licence. See [Licence](LICENCE) for full details.
 | bucket_name | string | Name of the S3 bucket                                                      |           | Y        |
 | origin_path | string | Serve request from a directory within your S3 bucket                  |           | N        |
 | cnames      | list   | List of alternate domain names for serving static website                  |          | Y        |
+| comment      | string   | Comment to include about distribution                  |          | N        |
+| price_class      | string   | The price class for this distribution. Valid values: PriceClass_All, PriceClass_200, PriceClass_100                  | PriceClass_All         | Y        |
+| web_acl_id     | string | AWS WAF ACL id to attach to CloudFront distribution                                 | null          | N        |
 | hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name |           | Y        |
 | tags | map | A map of tags to assign to the resource  |           | N        |
 
