@@ -51,6 +51,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
     acm_certificate_arn            = length(var.cnames) == 0 ? null : aws_acm_certificate_validation.cert_validation.certificate_arn
     cloudfront_default_certificate = length(var.cnames) == 0 ? true : false
     ssl_support_method             = "sni-only"
+    minimum_protocol_version       = "TLSv1.2_2018"
   }
 
   restrictions {
