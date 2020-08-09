@@ -33,7 +33,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   web_acl_id          = var.web_acl_id
 
   default_cache_behavior {
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = local.s3_origin_id
     compress               = true
@@ -103,19 +103,27 @@ data "aws_route53_zone" "zone" {
 }
 
 resource "aws_route53_record" "cert_record" {
-  count           = length(var.cnames)
+  provider = aws.us
+  for_each = {
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
   allow_overwrite = true
-  name            = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_name
-  type            = aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_type
+  name            = each.value.name
+  type            = each.value.type
   zone_id         = data.aws_route53_zone.zone.id
-  records         = [aws_acm_certificate.cert.domain_validation_options[count.index].resource_record_value]
+  records         = [each.value.record]
   ttl             = 60
 }
 
 resource "aws_acm_certificate_validation" "cert_validation" {
   provider                = aws.us
   certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = aws_route53_record.cert_record.*.fqdn
+  validation_record_fqdns = [for record in aws_route53_record.cert_record : record.fqdn]
 }
 
 resource "aws_route53_record" "website-record" {
