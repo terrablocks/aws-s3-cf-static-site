@@ -17,13 +17,13 @@ variable "origin_path" {
 }
 
 variable "cnames" {
-  type = list
+  type = list(any)
 }
 
 variable "hosted_zone" {}
 
 variable "tags" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
