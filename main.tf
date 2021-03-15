@@ -133,11 +133,15 @@ resource "aws_acm_certificate_validation" "cert_validation" {
   validation_record_fqdns = [for record in aws_route53_record.cert_record : record.fqdn]
 }
 
+locals {
+  website_domains = length(var.website_domains) == 0 ? var.cnames : var.website_domains
+}
+
 resource "aws_route53_record" "website-record" {
-  count           = length(var.cnames)
+  count           = length(local.website_domains)
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.zone.id
-  name            = var.cnames[count.index]
+  name            = local.website_domains[count.index]
   type            = "A"
 
   alias {

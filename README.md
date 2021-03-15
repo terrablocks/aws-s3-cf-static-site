@@ -25,6 +25,7 @@ MIT Licence. See [Licence](LICENCE) for full details.
 | price_class      | string   | The price class for this distribution. Valid values: PriceClass_All, PriceClass_200, PriceClass_100                  | PriceClass_All         | N        |
 | web_acl_id     | string | AWS WAF ACL id to attach to CloudFront distribution                                 | null          | N        |
 | hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name |           | Y        |
+| website_domains | list | Map different domain names than domain(s) specified in `cnames` variable for your CloudFront distribution. If left blank domain names provided in `cnames` are used   |           | N        |
 | tags | map | A map of tags to assign to the resource  |           | N        |
 
 ## Outputs

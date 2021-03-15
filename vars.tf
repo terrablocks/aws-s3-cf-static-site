@@ -38,3 +38,8 @@ variable "price_class" {
 variable "web_acl_id" {
   default = null
 }
+
+variable "website_domains" {
+  type    = list(any)
+  default = []
+}
