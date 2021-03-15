@@ -1,5 +1,5 @@
 data "aws_kms_key" "website" {
-  key_id = var.kms_key == "" ? null : var.kms_key
+  key_id = var.kms_key == "" ? "alias/aws/s3" : var.kms_key
 }
 
 resource "aws_s3_bucket" "website_bucket" {
