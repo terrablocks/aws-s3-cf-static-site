@@ -45,5 +45,5 @@ variable "website_domains" {
 }
 
 variable "kms_key" {
-  default = "alias/aws/s3"
+  default = null
 }
