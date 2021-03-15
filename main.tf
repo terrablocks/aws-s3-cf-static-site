@@ -19,7 +19,8 @@ resource "aws_s3_bucket" "website_bucket" {
   tags = var.tags
 }
 
-resource "aws_s3_account_public_access_block" "website_bucket" {
+resource "aws_s3_bucket_public_access_block" "website_bucket" {
+  bucket                  = aws_s3_bucket.website_bucket.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
