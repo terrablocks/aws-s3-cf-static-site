@@ -26,6 +26,7 @@ MIT Licence. See [Licence](LICENCE) for full details.
 | web_acl_id     | string | AWS WAF ACL id to attach to CloudFront distribution                                 | null          | N        |
 | hosted_zone | string | Root hosted zone to be used for mapping CloudFront with custom domain name |           | Y        |
 | website_domains | list | Map different domain names than domain(s) specified in `cnames` variable for your CloudFront distribution. If left blank domain names provided in `cnames` are used   |           | N        |
+| kms_key | string | ID/Alias/ARN of KMS key to use for default server side encryption  | alias/aws/s3  | N        |
 | tags | map | A map of tags to assign to the resource  |           | N        |
 
 ## Outputs

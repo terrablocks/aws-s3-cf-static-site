@@ -1,7 +1,20 @@
+data "aws_kms_key" "website" {
+  key_id = var.kms_key
+}
+
 resource "aws_s3_bucket" "website_bucket" {
   bucket        = var.bucket_name
   acl           = "private"
   force_destroy = true
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = data.aws_kms_key.website.id
+      }
+    }
+  }
 
   tags = var.tags
 }

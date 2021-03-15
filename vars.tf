@@ -43,3 +43,7 @@ variable "website_domains" {
   type    = list(any)
   default = []
 }
+
+variable "kms_key" {
+  default = "alias/aws/s3"
+}
