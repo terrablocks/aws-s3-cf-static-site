@@ -11,5 +11,5 @@ output "cloudfront_endpoint" {
 }
 
 output "website_endpoints" {
-  value = aws_route53_record.website-record.*.fqdn
+  value = local.website_domains
 }

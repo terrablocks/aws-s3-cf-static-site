@@ -35,7 +35,7 @@ MIT Licence. See [Licence](LICENCE) for full details.
 | s3_bucket           | string | S3 Bucket Name            |
 | cloudfront_id       | string | ID of CloudFront distribution       |
 | cloudfront_endpoint | string | Public endpoint of CloudFront distribution       |
-| website_endpoints   | list   | List of website endpoints created. Same as `cnames` variable value  |
+| website_endpoints   | list   | List of website DNS records created in Route53  |
 
 ## Deployment
 - `terraform init` - download plugins required to deploy resources
