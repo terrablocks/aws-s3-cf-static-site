@@ -4,7 +4,7 @@ This terraform module will deploy the following services for hosting a static we
 - S3
 - CloudFront
 - ACM
-- Route53
+- Route53 Records
 
 ## Licence:
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -12,6 +12,19 @@ This terraform module will deploy the following services for hosting a static we
 MIT Licence. See [Licence](LICENCE) for full details.
 
 # Usage Instructions:
+## Example:
+```terraform
+module "website" {
+  source = "github.com/terrablocks/aws-s3-cf-static-site.git"
+
+  profile     = local.profile
+  bucket_name = "example-website"
+  cnames      = ["example.com"]
+  comment     = "Bucket for example website"
+  hosted_zone = "example.com"
+}
+```
+
 ## Variables
 | Parameter   | Type   | Description                                                                | Default   | Required |
 |-------------|--------|----------------------------------------------------------------------------|-----------|----------|
