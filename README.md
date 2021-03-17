@@ -14,6 +14,11 @@ MIT Licence. See [Licence](LICENCE) for full details.
 # Usage Instructions:
 ## Example:
 ```terraform
+provider "aws" {
+  alias  = "aws.us"
+  region = "us-east-1"
+}
+
 module "website" {
   source = "github.com/terrablocks/aws-s3-cf-static-site.git"
 
@@ -22,6 +27,9 @@ module "website" {
   cnames      = ["example.com"]
   comment     = "Bucket for example website"
   hosted_zone = "example.com"
+  providers   = {
+    aws.us = aws.us
+  }
 }
 ```
 

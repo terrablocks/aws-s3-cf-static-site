@@ -104,14 +104,6 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
 POLICY
 }
 
-provider "aws" {
-  alias      = "us"
-  profile    = var.profile
-  access_key = var.access_key
-  secret_key = var.secret_key
-  region     = "us-east-1"
-}
-
 resource "aws_acm_certificate" "cert" {
   provider                  = aws.us
   domain_name               = element(slice(var.cnames, 0, 1), 0)
