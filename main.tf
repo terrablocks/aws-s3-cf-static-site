@@ -104,6 +104,10 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
 POLICY
 }
 
+provider "aws" {
+  alias = "us"
+}
+
 resource "aws_acm_certificate" "cert" {
   provider                  = aws.us
   domain_name               = element(slice(var.cnames, 0, 1), 0)
