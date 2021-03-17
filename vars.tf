@@ -12,12 +12,20 @@ variable "secret_key" {
 
 variable "bucket_name" {}
 
+variable "force_destroy" {
+  default = true
+}
+
 variable "origin_path" {
   default = ""
 }
 
 variable "cnames" {
   type = list(any)
+}
+
+variable "default_root_object" {
+  default = "index.html"
 }
 
 variable "hosted_zone" {}

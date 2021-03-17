@@ -5,7 +5,7 @@ data "aws_kms_key" "website" {
 resource "aws_s3_bucket" "website_bucket" {
   bucket        = var.bucket_name
   acl           = "private"
-  force_destroy = true
+  force_destroy = var.force_destroy
 
   server_side_encryption_configuration {
     rule {
@@ -48,7 +48,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  default_root_object = "index.html"
+  default_root_object = var.default_root_object
   aliases             = length(var.cnames) == 0 ? null : var.cnames
   comment             = var.comment
   web_acl_id          = var.web_acl_id
@@ -79,6 +79,13 @@ resource "aws_cloudfront_distribution" "website_cdn" {
     geo_restriction {
       restriction_type = "none"
     }
+  }
+
+  custom_error_response {
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/${var.default_root_object}"
+    error_caching_min_ttl = 10
   }
 
   tags = var.tags

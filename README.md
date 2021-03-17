@@ -27,7 +27,8 @@ module "website" {
   cnames      = ["example.com"]
   comment     = "Bucket for example website"
   hosted_zone = "example.com"
-  providers   = {
+  
+  providers = {
     aws.us = aws.us
   }
 }
@@ -40,8 +41,10 @@ module "website" {
 | access_key     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
 | secret_key     | string | Either profile or access key and secret key is required for creating ACM certificate                                 | null          | N        |
 | bucket_name | string | Name of the S3 bucket                                                      |           | Y        |
+| force_destroy | boolean | Delete all files within the bucket if present before deleting the bucket         | true   | N        |
 | origin_path | string | Serve request from a directory within your S3 bucket                  |           | N        |
 | cnames      | list   | List of alternate domain names for serving static website                  |          | Y        |
+| default_root_object  | string   | Default file to be returned when root URL is requested              | index.html   | N        |
 | comment      | string   | Comment to include about distribution                  |          | N        |
 | price_class      | string   | The price class for this distribution. Valid values: PriceClass_All, PriceClass_200, PriceClass_100                  | PriceClass_All         | N        |
 | web_acl_id     | string | AWS WAF ACL id to attach to CloudFront distribution                                 | null          | N        |
