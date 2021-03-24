@@ -56,8 +56,10 @@ module "website" {
 ## Outputs
 | Parameter           | Type   | Description               |
 |---------------------|--------|---------------------------|
-| s3_bucket           | string | S3 Bucket Name            |
+| s3_bucket           | string | Name of S3 Bucket created for hosting website            |
+| s3_bucket_arn       | string | ARN of S3 Bucket created for hosting website            |
 | cloudfront_id       | string | ID of CloudFront distribution       |
+| cloudfront_arn      | string | ARN of CloudFront distribution       |
 | cloudfront_endpoint | string | Public endpoint of CloudFront distribution       |
 | website_endpoints   | list   | List of website DNS records created in Route53  |
 
