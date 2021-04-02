@@ -105,6 +105,21 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
         "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
       },
       "Resource": "${aws_s3_bucket.website_bucket.arn}/*"
+    },
+    {
+      "Sid": "AllowSSLRequestsOnly",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "${aws_s3_bucket.website_bucket.arn}",
+        "${aws_s3_bucket.website_bucket.arn}/*"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
     }
   ]
 }
