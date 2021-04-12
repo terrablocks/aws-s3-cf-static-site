@@ -62,7 +62,7 @@ module "website" {
 |-------------|--------|----------------------------------------------------------------------------|-----------|----------|
 | event_type | string | The specific event to trigger this function. Valid values: `viewer-request`, `origin-request`, `viewer-response`, `origin-response`  |           | N        |
 | lambda_arn | string | ARN of the Lambda function  |           | N        |
-| include_body | boolean | When set to true it exposes the request body to the lambda function. Valid values: `true`, `false`  |           | N        |
+| include_body | boolean | When set to true it exposes the request body to the lambda function. Valid values: `true`, `false`. **Note:** Required only if event type is of kind request   |           | N        |
 
 ## custom_error_responses
 | Parameter   | Type   | Description                                                                | Default   | Required |
