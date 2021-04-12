@@ -43,6 +43,25 @@ variable "price_class" {
   default = "PriceClass_All"
 }
 
+variable "geo_restriction_type" {
+  default = "none"
+}
+
+variable "geo_restriction_locations" {
+  type    = list(any)
+  default = null
+}
+
+variable "lambda_functions" {
+  type    = list(any)
+  default = []
+}
+
+variable "custom_error_responses" {
+  type    = list(any)
+  default = []
+}
+
 variable "web_acl_id" {
   default = null
 }

@@ -65,6 +65,15 @@ resource "aws_cloudfront_distribution" "website_cdn" {
         forward = "none"
       }
     }
+
+    dynamic "lambda_function_association" {
+      for_each = var.lambda_functions
+      content {
+        event_type   = lambda_function_association.value["event_type"]
+        lambda_arn   = lambda_function_association.value["lambda_arn"]
+        include_body = lambda_function_association.value["include_body"]
+      }
+    }
   }
 
   price_class = var.price_class
@@ -77,15 +86,19 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
   restrictions {
     geo_restriction {
-      restriction_type = "none"
+      restriction_type = var.geo_restriction_type
+      locations        = var.geo_restriction_locations
     }
   }
 
-  custom_error_response {
-    error_code            = 403
-    response_code         = 200
-    response_page_path    = "/${var.default_root_object}"
-    error_caching_min_ttl = 10
+  dynamic "custom_error_response" {
+    for_each = var.custom_error_responses
+    content {
+      error_code            = custom_error_response.value["error_code"]
+      response_code         = custom_error_response.value["response_code"]
+      response_page_path    = custom_error_response.value["response_page_path"]
+      error_caching_min_ttl = custom_error_response.value["error_caching_ttl"]
+    }
   }
 
   tags = var.tags
