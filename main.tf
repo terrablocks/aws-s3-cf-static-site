@@ -71,7 +71,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
       content {
         event_type   = lambda_function_association.value["event_type"]
         lambda_arn   = lambda_function_association.value["lambda_arn"]
-        include_body = contains(split("-", lambda_function_association.value["event_type"]), "request") ? null : lambda_function_association.value["include_body"]
+        include_body = contains(split("-", lambda_function_association.value["event_type"]), "request") ? lambda_function_association.value["include_body"] : null
       }
     }
   }
