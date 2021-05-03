@@ -46,6 +46,8 @@ variable "lambda_functions" {
     include_body = bool
   }))
   default = [{
+    event_type   = null
+    lambda_arn   = null
     include_body = null
   }]
   description = <<-EOT
@@ -97,6 +99,7 @@ variable "custom_error_responses" {
   }))
   default = [{
     error_caching_min_ttl = null
+    error_code            = null
     response_code         = null
     response_page_path    = null
   }]
@@ -118,7 +121,8 @@ variable "access_logging" {
     prefix          = string
   })
   default = {
-    include_cookies = false
+    bucket          = null
+    include_cookies = null
     prefix          = null
   }
   description = <<-EOT
