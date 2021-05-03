@@ -43,13 +43,9 @@ variable "lambda_functions" {
   type = list(object({
     event_type   = string
     lambda_arn   = string
-    include_body = bool
+    include_body = optional(bool)
   }))
-  default = [{
-    event_type   = null
-    lambda_arn   = null
-    include_body = false
-  }]
+  default     = []
   description = <<-EOT
     A config block that triggers a lambda function with specific actions (maximum 4)
     ```{
@@ -92,17 +88,12 @@ variable "geo_restriction_locations" {
 
 variable "custom_error_responses" {
   type = list(object({
-    error_caching_min_ttl = number
     error_code            = number
-    response_code         = number
-    response_page_path    = string
+    error_caching_min_ttl = optional(number)
+    response_code         = optional(number)
+    response_page_path    = optional(string)
   }))
-  default = [{
-    error_caching_min_ttl = null
-    error_code            = null
-    response_code         = null
-    response_page_path    = null
-  }]
+  default     = []
   description = <<-EOT
     One or more custom error response elements (multiples allowed)
     ```{
@@ -117,14 +108,10 @@ variable "custom_error_responses" {
 variable "access_logging" {
   type = object({
     bucket          = string
-    include_cookies = bool
-    prefix          = string
+    include_cookies = optional(bool)
+    prefix          = optional(string)
   })
-  default = {
-    bucket          = null
-    include_cookies = false
-    prefix          = null
-  }
+  default     = null
   description = <<-EOT
     The logging configuration that controls how logs are written to your distribution
     ```{
