@@ -45,7 +45,9 @@ variable "lambda_functions" {
     lambda_arn   = string
     include_body = bool
   }))
-  default     = []
+  default = [{
+    include_body = null
+  }]
   description = <<-EOT
     A config block that triggers a lambda function with specific actions (maximum 4)
     ```{
@@ -93,7 +95,11 @@ variable "custom_error_responses" {
     response_code         = number
     response_page_path    = string
   }))
-  default     = []
+  default = [{
+    error_caching_min_ttl = null
+    response_code         = null
+    response_page_path    = null
+  }]
   description = <<-EOT
     One or more custom error response elements (multiples allowed)
     ```{
@@ -111,7 +117,10 @@ variable "access_logging" {
     include_cookies = bool
     prefix          = string
   })
-  default     = null
+  default = {
+    include_cookies = false
+    prefix          = null
+  }
   description = <<-EOT
     The logging configuration that controls how logs are written to your distribution
     ```{
