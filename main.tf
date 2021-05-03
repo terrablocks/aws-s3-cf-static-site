@@ -101,7 +101,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
       error_code            = lookup(custom_error_response.value, "error_code", null)
       response_code         = lookup(custom_error_response.value, "response_code", null)
       response_page_path    = lookup(custom_error_response.value, "response_page_path", null)
-      error_caching_min_ttl = lookup(custom_error_response.value, "error_caching_ttl", null)
+      error_caching_min_ttl = lookup(custom_error_response.value, "error_caching_min_ttl", null)
     }
   }
 
@@ -151,10 +151,6 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
   ]
 }
 POLICY
-}
-
-provider "aws" {
-  alias = "us"
 }
 
 resource "aws_acm_certificate" "cert" {
