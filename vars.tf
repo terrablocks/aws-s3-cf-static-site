@@ -48,14 +48,14 @@ variable "lambda_functions" {
   default = [{
     event_type   = null
     lambda_arn   = null
-    include_body = null
+    include_body = false
   }]
   description = <<-EOT
     A config block that triggers a lambda function with specific actions (maximum 4)
     ```{
       event_type   = The specific event to trigger this function. Possible values: viewer-request, origin-request, viewer-response, origin-response
       lambda_arn   = ARN of the Lambda function to trigger upon certain event
-      include_body = When set to true it exposes the request body to the lambda function. Required ONLY for request event. Defaults to false
+      include_body = When set to true it exposes the request body to the lambda function. Required ONLY for request event
     }```
   EOT
 }
@@ -122,7 +122,7 @@ variable "access_logging" {
   })
   default = {
     bucket          = null
-    include_cookies = null
+    include_cookies = false
     prefix          = null
   }
   description = <<-EOT
