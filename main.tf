@@ -1,8 +1,11 @@
 data "aws_kms_key" "website" {
-  key_id = var.kms_key == "" ? "alias/aws/s3" : var.kms_key
+  key_id = var.kms_key
 }
 
 resource "aws_s3_bucket" "website_bucket" {
+  # checkov:skip=CKV_AWS_18: Access logging not required
+  # checkov:skip=CKV_AWS_144: CRR not required
+  # checkov:skip=CKV_AWS_21: Versioning not required
   bucket        = var.bucket_name
   acl           = "private"
   force_destroy = var.force_destroy
@@ -10,8 +13,8 @@ resource "aws_s3_bucket" "website_bucket" {
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        sse_algorithm     = var.kms_key == "" ? "AES256" : "aws:kms"
-        kms_master_key_id = var.kms_key == "" ? null : data.aws_kms_key.website.id
+        sse_algorithm     = var.kms_key == "alias/aws/s3" ? "AES256" : "aws:kms"
+        kms_master_key_id = var.kms_key == "alias/aws/s3" ? null : data.aws_kms_key.website.id
       }
     }
   }
@@ -69,35 +72,46 @@ resource "aws_cloudfront_distribution" "website_cdn" {
     dynamic "lambda_function_association" {
       for_each = var.lambda_functions
       content {
-        event_type   = lambda_function_association.value["event_type"]
-        lambda_arn   = lambda_function_association.value["lambda_arn"]
-        include_body = contains(split("-", lambda_function_association.value["event_type"]), "request") ? lambda_function_association.value["include_body"] : null
+        event_type   = lookup(lambda_function_association.value, "event_type", null)
+        lambda_arn   = lookup(lambda_function_association.value, "lambda_arn", null)
+        include_body = lookup(lambda_function_association.value, "include_body", null)
       }
     }
   }
 
   price_class = var.price_class
+
   viewer_certificate {
-    acm_certificate_arn            = length(var.cnames) == 0 ? null : aws_acm_certificate_validation.cert_validation.certificate_arn
     cloudfront_default_certificate = length(var.cnames) == 0 ? true : false
-    ssl_support_method             = "sni-only"
-    minimum_protocol_version       = "TLSv1.2_2018"
+    acm_certificate_arn            = length(var.cnames) == 0 ? null : aws_acm_certificate_validation.cert_validation.certificate_arn
+    ssl_support_method             = length(var.cnames) == 0 ? null : var.ssl_support_method
+    minimum_protocol_version       = length(var.cnames) == 0 ? null : var.ssl_cert_protocol_version
   }
 
   restrictions {
     geo_restriction {
       restriction_type = var.geo_restriction_type
-      locations        = var.geo_restriction_locations
+      locations        = var.geo_restriction_type == "none" ? null : var.geo_restriction_locations
     }
   }
 
   dynamic "custom_error_response" {
     for_each = var.custom_error_responses
     content {
-      error_code            = custom_error_response.value["error_code"]
-      response_code         = custom_error_response.value["response_code"]
-      response_page_path    = custom_error_response.value["response_page_path"]
-      error_caching_min_ttl = custom_error_response.value["error_caching_ttl"]
+      error_code            = lookup(custom_error_response.value, "error_code", null)
+      response_code         = lookup(custom_error_response.value, "response_code", null)
+      response_page_path    = lookup(custom_error_response.value, "response_page_path", null)
+      error_caching_min_ttl = lookup(custom_error_response.value, "error_caching_ttl", null)
+    }
+  }
+
+  dynamic "logging_config" {
+    for_each = var.access_logging[*]
+
+    content {
+      bucket          = lookup(logging_config.value, "bucket", null)
+      include_cookies = lookup(logging_config.value, "include_cookies", null)
+      prefix          = lookup(logging_config.value, "prefix", null)
     }
   }
 
