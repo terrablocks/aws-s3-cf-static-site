@@ -3,9 +3,12 @@ data "aws_kms_key" "website" {
 }
 
 resource "aws_s3_bucket" "website_bucket" {
-  # checkov:skip=CKV_AWS_18: Access logging not required
+  # checkov:skip=CKV_AWS_18: Access logging not required on bucket as the same can be enabled at CloudFront level if required by user
   # checkov:skip=CKV_AWS_144: CRR not required
   # checkov:skip=CKV_AWS_21: Versioning not required
+  # checkov:skip=CKV_AWS_145: SSE encrytion depends on user
+  # checkov:skip=CKV_AWS_19: SSE encrytion depends on user
+  # checkov:skip=CKV_AWS_52: MFA delete not required
   bucket        = var.bucket_name
   acl           = "private"
   force_destroy = var.force_destroy
