@@ -26,7 +26,7 @@ jobs:
           python-version: 3.8
       - name: Scan with Checkov
         id: checkov
-        uses: bridgecrewio/checkov-action@master
+        uses: bridgecrewio/checkov-action@v12.641.0
         with:
           directory: .
           framework: terraform
