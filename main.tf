@@ -121,6 +121,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   tags = var.tags
 }
 
+# ListBucket permission is required so that CloudFront does not throw 403 (AccessDenied) error in case the requested file does not exists
 resource "aws_s3_bucket_policy" "website_bucket_policy" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -130,11 +131,17 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": "s3:GetObject",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
       "Principal": {
         "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
       },
-      "Resource": "${aws_s3_bucket.website_bucket.arn}/*"
+      "Resource": [
+        "${aws_s3_bucket.website_bucket.arn}",
+        "${aws_s3_bucket.website_bucket.arn}/*"
+      ]
     },
     {
       "Sid": "AllowSSLRequestsOnly",
