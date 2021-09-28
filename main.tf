@@ -80,6 +80,14 @@ resource "aws_cloudfront_distribution" "website_cdn" {
         include_body = lookup(lambda_function_association.value, "include_body", null)
       }
     }
+
+    dynamic "function_association" {
+      for_each = var.cloudfront_functions
+      content {
+        event_type   = lookup(function_association.value, "event_type", null)
+        function_arn = lookup(function_association.value, "function_arn", null)
+      }
+    }
   }
 
   price_class = var.price_class

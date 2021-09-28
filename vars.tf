@@ -64,15 +64,15 @@ variable "lambda_functions" {
 
 variable "cloudfront_functions" {
   type = list(object({
-    event_type = string
-    lambda_arn = string
+    event_type   = string
+    function_arn = string
   }))
   default     = []
   description = <<-EOT
     A config block that triggers a CloudFront function with specific actions (maximum 2)
     ```{
       event_type = The specific event to trigger this function. Possible values: viewer-request, viewer-response
-      lambda_arn = ARN of the CloudFront function to trigger upon certain event
+      function_arn = ARN of the CloudFront function to trigger upon certain event
     }```
   EOT
 }
