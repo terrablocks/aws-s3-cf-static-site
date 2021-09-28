@@ -3,6 +3,11 @@ variable "bucket_name" {
   description = "Name of S3 bucket"
 }
 
+variable "bucket_policy" {
+  type        = string
+  description = "Resource policy to apply on S3 bucket. Leave it blank to generate one automatically"
+}
+
 variable "force_destroy" {
   type        = bool
   default     = true
@@ -52,6 +57,21 @@ variable "lambda_functions" {
       event_type   = The specific event to trigger this function. Possible values: viewer-request, origin-request, viewer-response, origin-response
       lambda_arn   = ARN of the Lambda function to trigger upon certain event
       include_body = When set to true it exposes the request body to the lambda function. Required ONLY for request event
+    }```
+  EOT
+}
+
+variable "cloudfront_functions" {
+  type = list(object({
+    event_type = string
+    lambda_arn = string
+  }))
+  default     = []
+  description = <<-EOT
+    A config block that triggers a CloudFront function with specific actions (maximum 2)
+    ```{
+      event_type = The specific event to trigger this function. Possible values: viewer-request, viewer-response
+      lambda_arn = ARN of the CloudFront function to trigger upon certain event
     }```
   EOT
 }

@@ -121,46 +121,44 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   tags = var.tags
 }
 
+data "aws_iam_policy_document" "website_bucket_policy" {
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      aws_s3_bucket.website_bucket.arn,
+      "${aws_s3_bucket.website_bucket.arn}/*"
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"]
+    }
+  }
+
+  statement {
+    sid     = "AllowSSLRequestsOnly"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.website_bucket.arn,
+      "${aws_s3_bucket.website_bucket.arn}/*"
+    ]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
 # ListBucket permission is required so that CloudFront does not throw 403 (AccessDenied) error in case the requested file does not exists
 resource "aws_s3_bucket_policy" "website_bucket_policy" {
   bucket = aws_s3_bucket.website_bucket.id
-
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Principal": {
-        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
-      },
-      "Resource": [
-        "${aws_s3_bucket.website_bucket.arn}",
-        "${aws_s3_bucket.website_bucket.arn}/*"
-      ]
-    },
-    {
-      "Sid": "AllowSSLRequestsOnly",
-      "Effect": "Deny",
-      "Principal": "*",
-      "Action": "s3:*",
-      "Resource": [
-        "${aws_s3_bucket.website_bucket.arn}",
-        "${aws_s3_bucket.website_bucket.arn}/*"
-      ],
-      "Condition": {
-        "Bool": {
-          "aws:SecureTransport": "false"
-        }
-      }
-    }
-  ]
-}
-POLICY
+  policy = var.bucket_policy == "" ? data.aws_iam_policy_document.website_bucket_policy.json : var.bucket_policy
 }
 
 provider "aws" {

@@ -25,7 +25,7 @@ module "website" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13 |
+| terraform | >= 0.14 |
 | aws | >= 3.37.0 |
 | random | >= 3.1.0 |
 
@@ -34,6 +34,7 @@ module "website" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | bucket_name | Name of S3 bucket | `string` | n/a | yes |
+| bucket_policy | Resource policy to apply on S3 bucket. Leave it blank to generate one automatically | `string` | n/a | yes |
 | force_destroy | Empty bucket contents before deleting S3 bucket | `bool` | `true` | no |
 | kms_key | Alias/ARN/ID of KMS key for S3 SSE encryption | `string` | `"alias/aws/s3"` | no |
 | origin_path | CloudFront to request your content from a directory in your Amazon S3 bucket or your custom origin | `string` | `""` | no |
@@ -41,6 +42,7 @@ module "website" {
 | cnames | Access CloudFront using alternate domain names, if any | `list(string)` | `[]` | no |
 | web_acl_id | For ACL created via WAFv2 provide ACL ARN and for ACL created via WAFv1 provide ACL Id | `string` | `null` | no |
 | lambda_functions | A config block that triggers a lambda function with specific actions (maximum 4)<pre>{<br>  event_type   = The specific event to trigger this function. Possible values: viewer-request, origin-request, viewer-response, origin-response<br>  lambda_arn   = ARN of the Lambda function to trigger upon certain event<br>  include_body = When set to true it exposes the request body to the lambda function. Required ONLY for request event<br>}</pre> | <pre>list(object({<br>    event_type   = string<br>    lambda_arn   = string<br>    include_body = optional(bool)<br>  }))</pre> | `[]` | no |
+| cloudfront_functions | A config block that triggers a CloudFront function with specific actions (maximum 2)<pre>{<br>  event_type = The specific event to trigger this function. Possible values: viewer-request, viewer-response<br>  lambda_arn = ARN of the CloudFront function to trigger upon certain event<br>}</pre> | <pre>list(object({<br>    event_type = string<br>    lambda_arn = string<br>  }))</pre> | `[]` | no |
 | price_class | The price class for this distribution. Possible Values: PriceClass_All, PriceClass_200, PriceClass_100 | `string` | `"PriceClass_All"` | no |
 | ssl_support_method | Specifies how you want CloudFront to serve HTTPS requests. Required if using custom certificate. Possible Values: vip or sni-only | `string` | `"sni-only"` | no |
 | ssl_cert_protocol_version | The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. Required if using custom certificate. Possible Values: SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016, TLSv1.2_2018 or TLSv1.2_2019 | `string` | `"TLSv1.2_2019"` | no |
