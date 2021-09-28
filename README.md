@@ -14,11 +14,16 @@ This terraform module will deploy the following services for hosting a static we
 module "website" {
   source = "github.com/terrablocks/aws-s3-cf-static-site.git"
 
-  profile     = local.profile
+  profile     = ""
   bucket_name = "example-website"
   cnames      = ["example.com"]
   comment     = "Bucket for example website"
   hosted_zone = "example.com"
+
+  providers = {
+    aws.us = aws.us
+  }
+}
 ```
 
 ## Requirements
