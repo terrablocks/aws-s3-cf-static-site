@@ -34,7 +34,7 @@ module "website" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | bucket_name | Name of S3 bucket | `string` | n/a | yes |
-| bucket_policy | Resource policy to apply on S3 bucket. Leave it blank to generate one automatically | `string` | n/a | yes |
+| bucket_policy | Resource policy to apply on S3 bucket. Leave it blank to generate one automatically | `string` | `""` | no |
 | force_destroy | Empty bucket contents before deleting S3 bucket | `bool` | `true` | no |
 | kms_key | Alias/ARN/ID of KMS key for S3 SSE encryption | `string` | `"alias/aws/s3"` | no |
 | origin_path | CloudFront to request your content from a directory in your Amazon S3 bucket or your custom origin | `string` | `""` | no |

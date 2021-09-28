@@ -5,6 +5,7 @@ variable "bucket_name" {
 
 variable "bucket_policy" {
   type        = string
+  default     = ""
   description = "Resource policy to apply on S3 bucket. Leave it blank to generate one automatically"
 }
 
