@@ -155,6 +155,10 @@ data "aws_iam_policy_document" "website_bucket_policy" {
       aws_s3_bucket.website_bucket.arn,
       "${aws_s3_bucket.website_bucket.arn}/*"
     ]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
     condition {
       test     = "Bool"
       variable = "aws:SecureTransport"
