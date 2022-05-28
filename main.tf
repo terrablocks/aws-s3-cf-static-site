@@ -2,7 +2,7 @@ data "aws_kms_key" "website" {
   key_id = var.kms_key
 }
 
-resource "aws_s3_bucket" "website_bucket" {
+resource "aws_s3_bucket" "website" {
   # checkov:skip=CKV_AWS_18: Access logging not required on bucket as the same can be enabled at CloudFront level if required by user
   # checkov:skip=CKV_AWS_144: CRR not required
   # checkov:skip=CKV_AWS_21: Versioning not required
@@ -10,45 +10,50 @@ resource "aws_s3_bucket" "website_bucket" {
   # checkov:skip=CKV_AWS_19: SSE encrytion depends on user
   # checkov:skip=CKV_AWS_52: MFA delete not required
   bucket        = var.bucket_name
-  acl           = "private"
   force_destroy = var.force_destroy
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm     = var.kms_key == "alias/aws/s3" ? "AES256" : "aws:kms"
-        kms_master_key_id = var.kms_key == "alias/aws/s3" ? null : data.aws_kms_key.website.id
-      }
-    }
-  }
-
-  tags = var.tags
+  tags          = var.tags
 }
 
-resource "aws_s3_bucket_public_access_block" "website_bucket" {
-  bucket                  = aws_s3_bucket.website_bucket.id
+resource "aws_s3_bucket_acl" "website" {
+  bucket = aws_s3_bucket.website.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = var.kms_key == "alias/aws/s3" ? "AES256" : "aws:kms"
+      kms_master_key_id = var.kms_key == "alias/aws/s3" ? null : data.aws_kms_key.website.id
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "website" {
+  bucket                  = aws_s3_bucket.website.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
-  comment = aws_s3_bucket.website_bucket.id
+resource "aws_cloudfront_origin_access_identity" "website" {
+  comment = aws_s3_bucket.website.id
 }
 
 locals {
   s3_origin_id = md5(var.bucket_name)
 }
 
-resource "aws_cloudfront_distribution" "website_cdn" {
+resource "aws_cloudfront_distribution" "website" {
   origin {
-    domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.website.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
     origin_path = var.origin_path
 
     s3_origin_config {
-      origin_access_identity = "origin-access-identity/cloudfront/${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
+      origin_access_identity = "origin-access-identity/cloudfront/${aws_cloudfront_origin_access_identity.website.id}"
     }
   }
 
@@ -94,7 +99,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
   viewer_certificate {
     cloudfront_default_certificate = length(var.cnames) == 0 ? true : false
-    acm_certificate_arn            = length(var.cnames) == 0 ? null : aws_acm_certificate_validation.cert_validation.certificate_arn
+    acm_certificate_arn            = length(var.cnames) == 0 ? null : aws_acm_certificate_validation.website.certificate_arn
     ssl_support_method             = length(var.cnames) == 0 ? null : var.ssl_support_method
     minimum_protocol_version       = length(var.cnames) == 0 ? null : var.ssl_cert_protocol_version
   }
@@ -129,21 +134,21 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   tags = var.tags
 }
 
-data "aws_iam_policy_document" "website_bucket_policy" {
+data "aws_iam_policy_document" "website" {
   statement {
     actions = [
       "s3:GetObject",
-      "s3:ListBucket"
+      "s3:ListBucket" # ListBucket permission is required so that CloudFront does not throw 403 (AccessDenied) error in case the requested file does not exists
     ]
 
     resources = [
-      aws_s3_bucket.website_bucket.arn,
-      "${aws_s3_bucket.website_bucket.arn}/*"
+      aws_s3_bucket.website.arn,
+      "${aws_s3_bucket.website.arn}/*"
     ]
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"]
+      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.website.id}"]
     }
   }
 
@@ -152,8 +157,8 @@ data "aws_iam_policy_document" "website_bucket_policy" {
     effect  = "Deny"
     actions = ["s3:*"]
     resources = [
-      aws_s3_bucket.website_bucket.arn,
-      "${aws_s3_bucket.website_bucket.arn}/*"
+      aws_s3_bucket.website.arn,
+      "${aws_s3_bucket.website.arn}/*"
     ]
     principals {
       type        = "*"
@@ -167,17 +172,16 @@ data "aws_iam_policy_document" "website_bucket_policy" {
   }
 }
 
-# ListBucket permission is required so that CloudFront does not throw 403 (AccessDenied) error in case the requested file does not exists
-resource "aws_s3_bucket_policy" "website_bucket_policy" {
-  bucket = aws_s3_bucket.website_bucket.id
-  policy = var.bucket_policy == "" ? data.aws_iam_policy_document.website_bucket_policy.json : var.bucket_policy
+resource "aws_s3_bucket_policy" "website" {
+  bucket = aws_s3_bucket.website.id
+  policy = var.bucket_policy == "" ? data.aws_iam_policy_document.website.json : var.bucket_policy
 }
 
 provider "aws" {
   alias = "us"
 }
 
-resource "aws_acm_certificate" "cert" {
+resource "aws_acm_certificate" "website" {
   provider                  = aws.us
   domain_name               = element(slice(var.cnames, 0, 1), 0)
   subject_alternative_names = length(var.cnames) > 1 ? slice(var.cnames, 1, length(var.cnames)) : null
@@ -191,7 +195,7 @@ data "aws_route53_zone" "zone" {
 resource "aws_route53_record" "cert_record" {
   provider = aws.us
   for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.website.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
@@ -206,9 +210,9 @@ resource "aws_route53_record" "cert_record" {
   ttl             = 60
 }
 
-resource "aws_acm_certificate_validation" "cert_validation" {
+resource "aws_acm_certificate_validation" "website" {
   provider                = aws.us
-  certificate_arn         = aws_acm_certificate.cert.arn
+  certificate_arn         = aws_acm_certificate.website.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_record : record.fqdn]
 }
 
@@ -216,7 +220,7 @@ locals {
   website_domains = length(var.website_domains) == 0 ? var.cnames : var.website_domains
 }
 
-resource "aws_route53_record" "website-record" {
+resource "aws_route53_record" "website" {
   count           = length(local.website_domains)
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.zone.id
@@ -224,8 +228,8 @@ resource "aws_route53_record" "website-record" {
   type            = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.website_cdn.domain_name
-    zone_id                = aws_cloudfront_distribution.website_cdn.hosted_zone_id
+    name                   = aws_cloudfront_distribution.website.domain_name
+    zone_id                = aws_cloudfront_distribution.website.hosted_zone_id
     evaluate_target_health = false
   }
 }
