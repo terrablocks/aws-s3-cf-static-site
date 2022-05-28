@@ -1,6 +1,6 @@
 # Host a Static Website using S3 & CloudFront
 
-![License](https://img.shields.io/github/license/terrablocks/aws-s3-cf-static-site?style=for-the-badge) ![Tests](https://img.shields.io/github/workflow/status/terrablocks/aws-s3-cf-static-site/tests/master?label=Test&style=for-the-badge) ![Checkov](https://img.shields.io/github/workflow/status/terrablocks/aws-s3-cf-static-site/checkov/master?label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/terrablocks/aws-s3-cf-static-site?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/terrablocks/aws-s3-cf-static-site?style=for-the-badge)
+![License](https://img.shields.io/github/license/terrablocks/aws-s3-cf-static-site?style=for-the-badge) ![Tests](https://img.shields.io/github/workflow/status/terrablocks/aws-s3-cf-static-site/tests/main?label=Test&style=for-the-badge) ![Checkov](https://img.shields.io/github/workflow/status/terrablocks/aws-s3-cf-static-site/checkov/main?label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/terrablocks/aws-s3-cf-static-site?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/terrablocks/aws-s3-cf-static-site?style=for-the-badge)
 
 This terraform module will deploy the following services for hosting a static website:
 - S3
@@ -11,6 +11,12 @@ This terraform module will deploy the following services for hosting a static we
 # Usage Instructions
 ## Example
 ```terraform
+# Provider for N.Virginia
+provider "aws" {
+  alias  = "use1"
+  region = "us-east-1"
+}
+
 module "website" {
   source = "github.com/terrablocks/aws-s3-cf-static-site.git"
 
@@ -21,7 +27,7 @@ module "website" {
   hosted_zone = "example.com"
 
   providers = {
-    aws.us = aws.us
+    aws.us = aws.use1
   }
 }
 ```
