@@ -177,10 +177,6 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
   policy = var.bucket_policy == "" ? data.aws_iam_policy_document.website_bucket_policy.json : var.bucket_policy
 }
 
-provider "aws" {
-  alias = "us"
-}
-
 resource "aws_acm_certificate" "cert" {
   provider                  = aws.us
   domain_name               = element(slice(var.cnames, 0, 1), 0)

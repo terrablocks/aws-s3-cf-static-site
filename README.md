@@ -11,7 +11,7 @@ This terraform module will deploy the following services for hosting a static we
 # Usage Instructions
 ## Example
 ```terraform
-# Provider for N.Virginia
+# Provider for N.Virginia. Make sure to also have a default provider along with this provider
 provider "aws" {
   alias  = "use1"
   region = "us-east-1"
@@ -20,7 +20,6 @@ provider "aws" {
 module "website" {
   source = "github.com/terrablocks/aws-s3-cf-static-site.git"
 
-  profile     = ""
   bucket_name = "example-website"
   cnames      = ["example.com"]
   comment     = "Bucket for example website"
@@ -36,7 +35,7 @@ module "website" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.15 |
+| terraform | >= 1.3.0 |
 | aws | >= 4.0.0 |
 | random | >= 3.1.0 |
 

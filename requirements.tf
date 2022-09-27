@@ -1,16 +1,14 @@
 terraform {
-  required_version = ">= 0.15"
+  required_version = ">= 1.3.0"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.0.0"
-      # configuration_aliases = [aws.us]  # bug: https://github.com/hashicorp/terraform/issues/28490
+      source                = "hashicorp/aws"
+      version               = ">= 4.0.0"
+      configuration_aliases = [aws.us]
     }
     random = {
       source  = "hashicorp/random"
       version = ">= 3.1.0"
     }
   }
-
-  experiments = [module_variable_optional_attrs]
 }
