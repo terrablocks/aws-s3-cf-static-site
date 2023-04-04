@@ -9,6 +9,8 @@ resource "aws_s3_bucket" "website_bucket" {
   # checkov:skip=CKV_AWS_145: SSE encrytion depends on user
   # checkov:skip=CKV_AWS_19: SSE encrytion depends on user
   # checkov:skip=CKV_AWS_52: MFA delete not required
+  # checkov:skip=CKV2_AWS_62: Event notification not required
+  # checkov:skip=CKV2_AWS_61: Enabling lifecycle configuration depends on user
   bucket        = var.bucket_name
   force_destroy = var.force_destroy
   tags          = var.tags
@@ -47,6 +49,10 @@ locals {
 }
 
 resource "aws_cloudfront_distribution" "website_cdn" {
+  # checkov:skip=CKV_AWS_310: Origin failover configuration not required
+  # checkov:skip=CKV2_AWS_32: Response headers policy not required
+  # checkov:skip=CKV2_AWS_47: WAF attachment is dependant on user
+  # checkov:skip=CKV2_AWS_42: Attaching custom SSL certificate is dependant on user
   origin {
     domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
@@ -182,6 +188,11 @@ resource "aws_acm_certificate" "cert" {
   domain_name               = element(slice(var.cnames, 0, 1), 0)
   subject_alternative_names = length(var.cnames) > 1 ? slice(var.cnames, 1, length(var.cnames)) : null
   validation_method         = "DNS"
+  tags                      = var.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 data "aws_route53_zone" "zone" {
