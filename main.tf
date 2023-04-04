@@ -182,6 +182,7 @@ resource "aws_acm_certificate" "cert" {
   domain_name               = element(slice(var.cnames, 0, 1), 0)
   subject_alternative_names = length(var.cnames) > 1 ? slice(var.cnames, 1, length(var.cnames)) : null
   validation_method         = "DNS"
+  tags                      = var.tags
 }
 
 data "aws_route53_zone" "zone" {
