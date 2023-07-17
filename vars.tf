@@ -3,6 +3,12 @@ variable "bucket_name" {
   description = "Name of S3 bucket"
 }
 
+variable "bucket_object_ownership" {
+  type        = string
+  default     = "BucketOwnerEnforced"
+  description = "Specify object ownership method. Possible values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced"
+}
+
 variable "bucket_policy" {
   type        = string
   default     = ""
@@ -91,8 +97,8 @@ variable "ssl_support_method" {
 
 variable "ssl_cert_protocol_version" {
   type        = string
-  default     = "TLSv1.2_2019"
-  description = "The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. Required if using custom certificate. Possible Values: SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016, TLSv1.2_2018 or TLSv1.2_2019"
+  default     = "TLSv1.2_2021"
+  description = "The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. Required if using custom certificate. Possible Values: SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016, TLSv1.2_2018, TLSv1.2_2019 or TLSv1.2_2021"
 }
 
 variable "geo_restriction_type" {
