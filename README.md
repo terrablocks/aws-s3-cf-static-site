@@ -44,6 +44,7 @@ module "website" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | bucket_name | Name of S3 bucket | `string` | n/a | yes |
+| bucket_object_ownership | Specify object ownership method. Possible values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced | `string` | `"BucketOwnerEnforced"` | no |
 | bucket_policy | Resource policy to apply on S3 bucket. Leave it blank to generate one automatically | `string` | `""` | no |
 | force_destroy | Empty bucket contents before deleting S3 bucket | `bool` | `true` | no |
 | kms_key | Alias/ARN/ID of KMS key for S3 SSE encryption | `string` | `"alias/aws/s3"` | no |
@@ -55,7 +56,7 @@ module "website" {
 | cloudfront_functions | A config block that triggers a CloudFront function with specific actions (maximum 2)<pre>{<br>  event_type = The specific event to trigger this function. Possible values: viewer-request, viewer-response<br>  function_arn = ARN of the CloudFront function to trigger upon certain event<br>}</pre> | <pre>list(object({<br>    event_type   = string<br>    function_arn = string<br>  }))</pre> | `[]` | no |
 | price_class | The price class for this distribution. Possible Values: PriceClass_All, PriceClass_200, PriceClass_100 | `string` | `"PriceClass_All"` | no |
 | ssl_support_method | Specifies how you want CloudFront to serve HTTPS requests. Required if using custom certificate. Possible Values: vip or sni-only | `string` | `"sni-only"` | no |
-| ssl_cert_protocol_version | The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. Required if using custom certificate. Possible Values: SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016, TLSv1.2_2018 or TLSv1.2_2019 | `string` | `"TLSv1.2_2019"` | no |
+| ssl_cert_protocol_version | The minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections. Required if using custom certificate. Possible Values: SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016, TLSv1.2_2018, TLSv1.2_2019 or TLSv1.2_2021 | `string` | `"TLSv1.2_2021"` | no |
 | geo_restriction_type | The method that you want to use to restrict distribution of your content by country. Possible Values: none, whitelist, or blacklist | `string` | `"none"` | no |
 | geo_restriction_locations | The `ISO 3166-1-alpha-2` country codes for which you to either whitelist or blacklist CloudFront content | `list(string)` | `[]` | no |
 | custom_error_responses | One or more custom error response elements (multiples allowed)<pre>{<br>  error_caching_min_ttl = The minimum amount of time you want HTTP error codes to stay in CloudFront caches before CloudFront queries your origin to see whether the object has been updated<br>  error_code            = The 4xx or 5xx HTTP status code that you want to customize<br>  response_code         = The HTTP status code that you want CloudFront to return with the custom error page to the viewer<br>  response_page_path    = The path of the custom error page. Example: /404.html. Make sure the file 404.html is present within the origin<br>}</pre> | <pre>list(object({<br>    error_code            = number<br>    error_caching_min_ttl = optional(number)<br>    response_code         = optional(number)<br>    response_page_path    = optional(string)<br>  }))</pre> | `[]` | no |

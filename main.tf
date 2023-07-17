@@ -16,9 +16,12 @@ resource "aws_s3_bucket" "website_bucket" {
   tags          = var.tags
 }
 
-resource "aws_s3_bucket_acl" "website_bucket" {
+resource "aws_s3_bucket_ownership_controls" "website_bucket" {
   bucket = aws_s3_bucket.website_bucket.id
-  acl    = "private"
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "website_bucket" {
