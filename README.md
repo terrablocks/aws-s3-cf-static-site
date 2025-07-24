@@ -10,6 +10,7 @@ This terraform module will deploy the following services:
 - Route53 Records
 
 **Important:**
+If you are providing custom KMS key for encrypting objects stored in S3 bucket make sure to update KMS key policy to allow CloudFront distribution to access the key. Doc: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html
 
 # Usage Instructions
 ## Example
