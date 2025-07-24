@@ -12,7 +12,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: |
+          echo '''
+          provider "aws" {
+            alias  = "us"
+            region = "us-east-1"
+          }
+          ''' > provider.tf
+          terraform init
       - name: Terraform Validate
         id: validate
         run: terraform validate
