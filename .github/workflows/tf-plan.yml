@@ -23,7 +23,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: |
+          echo '''
+          provider "aws" {
+            alias  = "us"
+            region = "us-east-1"
+          }
+          ''' > provider.tf
+          terraform init
       - name: Terraform Plan
         id: plan
         run: terraform plan -var 'bucket_name=terrablocks-webapp'
