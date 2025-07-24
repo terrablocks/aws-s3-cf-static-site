@@ -41,8 +41,7 @@ variable "default_root_object" {
 
 variable "cnames" {
   type        = list(string)
-  default     = []
-  description = "Access CloudFront using alternate domain names, if any"
+  description = "Access CloudFront using a custom domain name"
 }
 
 variable "web_acl_id" {
@@ -149,12 +148,6 @@ variable "access_logging" {
   EOT
 }
 
-variable "tags" {
-  type        = map(any)
-  default     = {}
-  description = "Key Value pair to assign to CloudFront and S3 bucket"
-}
-
 variable "comment" {
   type        = string
   default     = "Managed by terrablocks"
@@ -163,12 +156,11 @@ variable "comment" {
 
 variable "hosted_zone" {
   type        = string
-  default     = null
-  description = "Name of hosted zone to add DNS records if `cnames` are provided"
+  description = "Name of hosted zone to add DNS records"
 }
 
-variable "website_domains" {
-  type        = list(string)
-  default     = []
-  description = "Map different domain names than domain(s) specified in `cnames` variable for your CloudFront distribution. If left blank domain names provided in `cnames` are used"
+variable "tags" {
+  type        = map(any)
+  default     = {}
+  description = "Key Value pair to assign to all the resources created by this module"
 }

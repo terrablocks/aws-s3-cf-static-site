@@ -33,4 +33,4 @@ jobs:
           terraform init
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var 'bucket_name=terrablocks-webapp'
+        run: terraform plan -var 'bucket_name=terrablocks-webapp' -var 'cnames=["terrablocks-webapp.vimalpaliwal.com"]' -var 'hosted_zone=terrablocks-webapp.vimalpaliwal.com'
