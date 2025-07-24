@@ -43,8 +43,12 @@ resource "aws_s3_bucket_public_access_block" "website_bucket" {
   restrict_public_buckets = true
 }
 
-resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
-  comment = aws_s3_bucket.website_bucket.id
+resource "aws_cloudfront_origin_access_control" "website" {
+  name                              = aws_s3_bucket.website_bucket.id
+  description                       = "OAC for ${aws_s3_bucket.website_bucket.id}"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 locals {
@@ -59,13 +63,10 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   # checkov:skip=CKV_AWS_174: TLS certificate version is dependant on user
   # checkov:skip=CKV_AWS_374: Enabling geo restriction is dependant on user
   origin {
-    domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
-    origin_id   = local.s3_origin_id
-    origin_path = var.origin_path
-
-    s3_origin_config {
-      origin_access_identity = "origin-access-identity/cloudfront/${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
-    }
+    domain_name              = aws_s3_bucket.website_bucket.bucket_regional_domain_name
+    origin_id                = local.s3_origin_id
+    origin_path              = var.origin_path
+    origin_access_control_id = aws_cloudfront_origin_access_control.website.id
   }
 
   enabled             = true
@@ -147,19 +148,23 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
 data "aws_iam_policy_document" "website_bucket_policy" {
   statement {
+    effect = "Allow"
     actions = [
       "s3:GetObject",
       "s3:ListBucket" # ListBucket permission is required so that CloudFront does not throw 403 (AccessDenied) error in case the requested file does not exists
     ]
-
     resources = [
       aws_s3_bucket.website_bucket.arn,
       "${aws_s3_bucket.website_bucket.arn}/*"
     ]
-
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = [aws_cloudfront_distribution.website_cdn.arn]
     }
   }
 
