@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # Host a Static Website using S3 & CloudFront
 
-![License](https://img.shields.io/github/license/terrablocks/aws-s3-cf-static-site.git?style=for-the-badge) ![Plan](https://img.shields.io/github/actions/workflow/status/terrablocks/aws-s3-cf-static-site.git/tf-plan.yml?branch=main&label=Plan&style=for-the-badge) ![Checkov](https://img.shields.io/github/actions/workflow/status/terrablocks/aws-s3-cf-static-site.git/checkov.yml?branch=main&label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/terrablocks/aws-s3-cf-static-site.git?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/terrablocks/aws-s3-cf-static-site.git?style=for-the-badge)
+![License](https://img.shields.io/github/license/terrablocks/aws-s3-cf-static-site?style=for-the-badge) ![Plan](https://img.shields.io/github/actions/workflow/status/terrablocks/aws-s3-cf-static-site/tf-plan.yml?branch=main&label=Plan&style=for-the-badge) ![Checkov](https://img.shields.io/github/actions/workflow/status/terrablocks/aws-s3-cf-static-site/checkov.yml?branch=main&label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/terrablocks/aws-s3-cf-static-site?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/terrablocks/aws-s3-cf-static-site?style=for-the-badge)
 
 This terraform module will deploy the following services:
 - S3
