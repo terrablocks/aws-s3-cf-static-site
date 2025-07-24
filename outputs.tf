@@ -24,6 +24,6 @@ output "cloudfront_endpoint" {
 }
 
 output "website_endpoints" {
-  value       = local.website_domains
+  value       = var.cnames
   description = "Alternate domain names created in Route53 for CloudFront distribution"
 }
