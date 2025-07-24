@@ -20,7 +20,7 @@ resource "aws_s3_bucket_ownership_controls" "website_bucket" {
   bucket = aws_s3_bucket.website_bucket.id
 
   rule {
-    object_ownership = "BucketOwnerEnforced"
+    object_ownership = var.bucket_object_ownership
   }
 }
 
@@ -56,6 +56,8 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   # checkov:skip=CKV2_AWS_32: Response headers policy not required
   # checkov:skip=CKV2_AWS_47: WAF attachment is dependant on user
   # checkov:skip=CKV2_AWS_42: Attaching custom SSL certificate is dependant on user
+  # checkov:skip=CKV_AWS_174: TLS certificate version is dependant on user
+  # checkov:skip=CKV_AWS_374: Enabling geo restriction is dependant on user
   origin {
     domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
@@ -230,7 +232,7 @@ locals {
   website_domains = length(var.website_domains) == 0 ? var.cnames : var.website_domains
 }
 
-resource "aws_route53_record" "website-record" {
+resource "aws_route53_record" "website_record" {
   count           = length(local.website_domains)
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.zone.id
